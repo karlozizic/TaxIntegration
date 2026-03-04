@@ -3,4 +3,5 @@
     <File Path="compose.yaml" />
   </Folder>
   <Project Path="TaxIntegration.Api/TaxIntegration.Api.csproj" />
+  <Project Path="TaxIntegration.MockTaxApi/TaxIntegration.MockTaxApi.csproj" />
 </Solution>
