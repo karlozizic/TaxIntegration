@@ -57,13 +57,19 @@ public class IntegrationEventRepository
             """, new { Id = id, ErrorMessage = errorMessage });
     }
 
+    public async Task<IEnumerable<IntegrationEvent>> GetPendingOrProcessing()
+    {
+        await using var conn = _db.Create();
+        return await conn.QueryAsync<IntegrationEvent>(
+            "SELECT * FROM integration_events WHERE status IN ('Pending', 'Processing')");
+    }
+
     public async Task MarkFailed(Guid id, string errorMessage)
     {
         await using var conn = _db.Create();
         await conn.ExecuteAsync("""
             UPDATE integration_events
-            SET status = 'Failed', retry_count = retry_count + 1,
-                error_message = @ErrorMessage, last_attempt_at = now()
+            SET status = 'Failed', error_message = @ErrorMessage, last_attempt_at = now()
             WHERE id = @Id
             """, new { Id = id, ErrorMessage = errorMessage });
     }

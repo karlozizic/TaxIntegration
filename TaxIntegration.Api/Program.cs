@@ -24,6 +24,7 @@ builder.Services.AddHttpClient("TaxApi", client =>
 });
 builder.Services.AddSingleton<TaxApiClient>();
 
+builder.Services.AddHostedService<RecoveryWorker>();
 builder.Services.AddHostedService<TaxCalculationWorker>();
 
 var app = builder.Build();
