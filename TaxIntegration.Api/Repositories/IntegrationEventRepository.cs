@@ -46,6 +46,17 @@ public class IntegrationEventRepository
             new { Id = id });
     }
 
+    public async Task IncrementRetry(Guid id, string errorMessage)
+    {
+        await using var conn = _db.Create();
+        await conn.ExecuteAsync("""
+            UPDATE integration_events
+            SET status = 'Pending', retry_count = retry_count + 1,
+                error_message = @ErrorMessage, last_attempt_at = now()
+            WHERE id = @Id
+            """, new { Id = id, ErrorMessage = errorMessage });
+    }
+
     public async Task MarkFailed(Guid id, string errorMessage)
     {
         await using var conn = _db.Create();

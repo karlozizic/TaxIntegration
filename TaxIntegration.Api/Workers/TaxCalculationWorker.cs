@@ -59,8 +59,20 @@ public class TaxCalculationWorker : BackgroundService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Tax calculation failed for order {OrderId}", order!.Id);
-            await events.MarkFailed(eventId, ex.Message);
-            await orders.UpdateStatus(order.Id, "Failed");
+
+            if (evt.RetryCount < evt.MaxRetries)
+            {
+                var delay = TimeSpan.FromSeconds(Math.Pow(2, evt.RetryCount));
+                _logger.LogWarning("Retrying event {EventId} in {Delay}s (attempt {Attempt}/{Max})", eventId, delay.TotalSeconds, evt.RetryCount + 1, evt.MaxRetries);
+                await events.IncrementRetry(eventId, ex.Message);
+                await Task.Delay(delay, ct);
+                _queue.Enqueue(eventId);
+            }
+            else
+            {
+                await events.MarkFailed(eventId, ex.Message);
+                await orders.UpdateStatus(order.Id, "Failed");
+            }
         }
     }
 }
