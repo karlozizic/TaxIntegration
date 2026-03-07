@@ -2,6 +2,8 @@ using Dapper;
 using TaxIntegration.Api.Infrastructure;
 using TaxIntegration.Api.Models;
 
+namespace TaxIntegration.Api.Repositories;
+
 public class OrderRepository
 {
     private readonly DbConnectionFactory _db;
