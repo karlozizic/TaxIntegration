@@ -42,4 +42,12 @@ public class OrderRepository
             "SELECT * FROM orders WHERE external_order_id = @ExternalOrderId",
             new { ExternalOrderId = externalOrderId });
     }
+
+    public async Task UpdateStatus(Guid id, string newStatus)
+    {
+        await using var conn = _db.Create();
+        await conn.ExecuteAsync(
+            "UPDATE orders SET status = @Status, updated_at = now() WHERE id = @Id",
+            new { Status = newStatus, Id = id });
+    }
 }
