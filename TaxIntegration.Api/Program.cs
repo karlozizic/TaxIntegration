@@ -16,6 +16,7 @@ builder.Services.AddSingleton<EventQueue>();
 builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<IntegrationEventRepository>();
 builder.Services.AddScoped<TaxCalculationRepository>();
+builder.Services.AddScoped<IdempotencyRepository>();
 
 builder.Services.AddHttpClient("TaxApi", client =>
 {

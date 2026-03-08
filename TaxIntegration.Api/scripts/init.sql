@@ -33,3 +33,11 @@ CREATE TABLE integration_events (
     error_message TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE TABLE idempotency_keys (
+    key VARCHAR(200) PRIMARY KEY,
+    order_id UUID NOT NULL,
+    response_body JSONB NOT NULL,
+    response_status INT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
