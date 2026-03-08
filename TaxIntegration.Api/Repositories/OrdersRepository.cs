@@ -2,6 +2,8 @@ using Dapper;
 using TaxIntegration.Api.Infrastructure;
 using TaxIntegration.Api.Models;
 
+namespace TaxIntegration.Api.Repositories;
+
 public class OrderRepository
 {
     private readonly DbConnectionFactory _db;
@@ -41,5 +43,13 @@ public class OrderRepository
         return await conn.QuerySingleOrDefaultAsync<Order>(
             "SELECT * FROM orders WHERE external_order_id = @ExternalOrderId",
             new { ExternalOrderId = externalOrderId });
+    }
+
+    public async Task UpdateStatus(Guid id, string newStatus)
+    {
+        await using var conn = _db.Create();
+        await conn.ExecuteAsync(
+            "UPDATE orders SET status = @Status, updated_at = now() WHERE id = @Id",
+            new { Status = newStatus, Id = id });
     }
 }
